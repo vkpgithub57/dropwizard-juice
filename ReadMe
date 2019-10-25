@@ -1,0 +1,45 @@
+To compile this Project, You need below things to be installed.
+    1. Mongo DB (latest)
+    2. JDK 1.8
+    3. Eclipse
+  
+After maven build, jar file will be created in below location
+
+  /target/Test-0.0.1-SNAPSHOT.jar
+  
+Run JAR by using command in Project folder location:
+
+  java -jar target\DropwizardMongoDB-1.0.0.jar src/main/resources/dropwizardmongodb.yml
+  
+Sample API calls and results:
+1. POST API to create an customer
+    http://localhost:4000/customer/create   
+   JSON Request Body:
+    {
+      "firstName": "Viijay",
+      "lastName": "Durai",
+      "email": "vijays@gmail.com",
+      "phone":98989
+    }
+   JSON Response Body:
+   {
+    "message": "Customer created successfully"
+    }
+    
+2. GET API to get all customers:
+    http://localhost:4000/customer
+    
+3. API to get search/sort customer
+    http://localhost:4000/customer/search
+   JSON Request Body:
+     {
+      "search": "mm3z",
+      "sort": {
+        "key":"firstName",
+        "value":"asc"
+      },
+      "limit": 10,
+      "page": 1
+     }
+    
+  
