@@ -68,7 +68,7 @@
     <dropwizard.version>1.3.5</dropwizard.version>
     <gson.version>2.8.1</gson.version>
     <swagger.version>1.5.3-M1</swagger.version>
-    <mongojava.version>3.5.0</mongojava.version>
+    <mongojava.version>3.6.0</mongojava.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

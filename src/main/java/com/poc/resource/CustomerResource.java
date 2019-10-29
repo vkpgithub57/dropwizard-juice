@@ -22,14 +22,14 @@ import com.google.inject.Inject;
 import com.mongodb.BasicDBObject;
 import com.poc.dao.CustomerDAO;
 import com.poc.model.Customer;
+import com.poc.model.CustomerUpdateRequest;
 import com.poc.model.SearchCustomer;
 
 @Path("/customer")
-@Produces(MediaType.APPLICATION_JSON)
 public class CustomerResource {
 
 	CustomerDAO customerDAO;
-	Map<String, String> response = null;
+	Map<String, Object> response = null;
  
 	@Inject
 	public CustomerResource(CustomerDAO customerDAO) {
@@ -37,43 +37,92 @@ public class CustomerResource {
 	}
 
 	@POST
-	@Path("/create")
 	@Timed
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createCustomer(@NotNull @Valid final Customer customer) {
 		Gson gson = new Gson();
 		String json = gson.toJson(customer);
-		customerDAO.createCustomer(new Document(BasicDBObject.parse(json)));
 		response = new HashMap<>();
+		// Email Validation
+		Boolean checkEmail = customerDAO.checkEmailExist(customer);
+		if(!checkEmail){
+			response.put("message", "Email Already Exist.");
+			response.put("status", false);
+			return Response.ok(response).build();
+		}
+		customerDAO.createCustomer(new Document(BasicDBObject.parse(json)));
 		response.put("message", "Customer created successfully");
+		response.put("status", true);
 		return Response.ok(response).build();
 	}
 
 	@POST
 	@Path("/update")
 	@Timed
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateCustomer(@NotNull @Valid final Customer customer) {
-		customerDAO.updateCustomer("firstName", "lastName", "email","phone",customer);
+	public Response updateCustomer(@NotNull @Valid final CustomerUpdateRequest customer) {
 		response = new HashMap<>();
+		Boolean checkEmail = customerDAO.checkEmailUpdate(customer);
+		if(!checkEmail){
+			response.put("message", "Email Already Exist for other customer.");
+			response.put("status", false);
+			return Response.ok(response).build();
+		}
+		customerDAO.updateCustomer("firstName", "lastName", "email","phone",customer);
 		response.put("message", "Customer Updated successfully");
+		response.put("status", true);
 	    return Response.ok(response).build();
 	}
 
-	@GET
+	@POST
+	@Path("/dashboard")
 	@Timed
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getCustomers() {
+	public Response getLimitedCustomers(@NotNull @Valid final SearchCustomer searchCustomer) {
+		
+		/*
+		 * For Dashboard, By Default Limit 20, Page:1, sort: ascending, search: nil
+		 */
 		List<Document> documents = customerDAO.getCustomers();
-		return Response.ok(documents).build();
+		response = new HashMap<>();
+		
+		if(documents.size()<1) {
+			response.put("message", "Data not found");
+			response.put("data", documents);
+			response.put("status", false);
+			return Response.ok(response).build();
+		}
+		int count = customerDAO.getCollectionRecordCount();
+		response.put("message", "Data available");
+		response.put("data", documents);
+		response.put("record_count", count);
+		response.put("status", true);
+		return Response.ok(response).build();
 	}
 
 	@POST
 	@Timed
 	@Path("/search")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getCustomerPage(@NotNull @Valid final SearchCustomer searchCustomer) {
-		List<Document> documents = customerDAO.getPaginatedData(searchCustomer);
-		return Response.ok(documents).build();
+		List<CustomerUpdateRequest> documents = customerDAO.getPaginatedData(searchCustomer);
+		response = new HashMap<>();
+		if(documents.size()<1) {
+			response.put("message", "Data not found");
+			response.put("data", documents);
+			response.put("status", false);
+			return Response.ok(response).build();
+		}
+		int count = customerDAO.getCollectionRecordCount();
+		response.put("message", "Data available");
+		response.put("data", documents);
+		response.put("record_count", count);
+		response.put("status", true);
+		return Response.ok(response).build();
+
 	}
 }

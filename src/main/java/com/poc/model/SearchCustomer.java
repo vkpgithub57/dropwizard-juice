@@ -1,13 +1,9 @@
 package com.poc.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 public class SearchCustomer {
 
-	@NotEmpty
 	private String search;
 	private SortCustomer sort;
-	@NotEmpty
 	private int limit;
 	private int page;
 	

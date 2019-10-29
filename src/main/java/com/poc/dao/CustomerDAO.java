@@ -5,13 +5,17 @@ import java.util.List;
 import org.bson.Document;
 
 import com.poc.model.Customer;
+import com.poc.model.CustomerUpdateRequest;
 import com.poc.model.SearchCustomer;
 
 
 public interface CustomerDAO {
 
 	public void createCustomer(Document document);
-    public void updateCustomer(String fName, String lName, String email,String phone, Customer customer);
+	public Boolean checkEmailExist(Customer customer);
+	public Boolean checkEmailUpdate(CustomerUpdateRequest customer);
+    public void updateCustomer(String fName, String lName, String email,String phone, CustomerUpdateRequest customer);
     public List<Document> getCustomers();
-	public List<Document> getPaginatedData(SearchCustomer searchCustomer);
+	public List<CustomerUpdateRequest> getPaginatedData(SearchCustomer searchCustomer);
+	public int getCollectionRecordCount();
 }

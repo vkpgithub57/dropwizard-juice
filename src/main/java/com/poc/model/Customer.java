@@ -1,26 +1,22 @@
 package com.poc.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 public class Customer {
 
-	@NotEmpty
 	private String firstName;
-	@NotEmpty
 	private String lastName;
 	private String email;
-	private int phone;
+	private String phone;
 	
     public Customer() {
     }
 
-	public Customer(String firstName, String lastName, String email, int phone) {
+	public Customer(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
     }
-
+		
     public String getFirstName() {
 		return firstName;
 	}
@@ -45,16 +41,16 @@ public class Customer {
 		this.email = email;
 	}
 
-	public int getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(int phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
 
-    @Override
+	@Override
     public String toString() {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
@@ -63,4 +59,6 @@ public class Customer {
                 ", phone=" + phone +
                 '}';
     }
+
+
 }

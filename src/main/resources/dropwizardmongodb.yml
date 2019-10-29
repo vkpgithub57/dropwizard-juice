@@ -16,5 +16,5 @@ server:
 
 mongoHost : localhost
 mongoPort : 27017
-mongoDB : test_db
-collectionName: customer
+mongoDB : test_acube
+collectionName: employees
